@@ -10,7 +10,21 @@ class AuthServices {
   }) async {
     try {
       final response = await dio
-          .post(userSignupUrl, data: {"email": email, "password": password});
+          .post(userLoginUrl, data: {"email": email, "password": password});
+      return right(true);
+    } on DioError catch (err) {
+      return left("${err.message}");
+    }
+  }
+
+  static Future<Either<String, bool>> userSignUp({
+    required String email,
+    required String password,
+    required String full_name,
+  }) async {
+    try {
+      final response = await dio.post(userSignupUrl,
+          data: {"email": email, "password": password, "full_name": full_name});
       return right(true);
     } on DioError catch (err) {
       return left("${err.message}");
