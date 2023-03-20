@@ -44,6 +44,9 @@ dependencies:
   hive_flutter: ^1.1.0
   build_runner: ^2.3.3
   hive_generator: ^2.0.0
+  get: ^4.6.5
+  flutter_screenutil: ^5.6.1
+  cloudinary_public: ^0.13.0
 
 dev_dependencies:
   flutter_test:

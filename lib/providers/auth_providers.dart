@@ -1,12 +1,12 @@
-import 'package:ecommerce/models/curd_state.dart';
+import 'package:ecommerce/main.dart';
+import 'package:ecommerce/models/user_state.dart';
 import 'package:ecommerce/services/auth_services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 
-final authProvider = StateNotifierProvider<AuthProvider, CurdState>((ref) =>
-    AuthProvider(CurdState(
-        error: "", isError: false, isLoading: false, isSuccess: false)));
+import '../models/users.dart';
 
-class AuthProvider extends StateNotifier<CurdState> {
+class AuthProvider extends StateNotifier<UserState> {
   AuthProvider(super.state);
 
   Future<void> userLogin({
@@ -19,11 +19,19 @@ class AuthProvider extends StateNotifier<CurdState> {
     return response.fold(
         (l) => {
               state = state.copyWith(
-                  isError: true, isSuccess: false, isLoading: false, error: l)
+                  isError: true,
+                  isSuccess: false,
+                  isLoading: false,
+                  error: l,
+                  users: [])
             },
         (r) => {
               state = state.copyWith(
-                  isError: false, isSuccess: true, isLoading: false, error: "")
+                  isError: false,
+                  isSuccess: true,
+                  isLoading: false,
+                  error: "",
+                  users: [r])
             });
   }
 
@@ -33,7 +41,7 @@ class AuthProvider extends StateNotifier<CurdState> {
       required String fullName}) async {
     state = state.copyWith(isLoading: true);
     final response = await AuthServices.userSignUp(
-        email: email, password: password, full_name: fullName);
+        email: email, password: password, fullName: fullName);
     return response.fold(
         (l) => {
               state = state.copyWith(
@@ -44,4 +52,23 @@ class AuthProvider extends StateNotifier<CurdState> {
                   isError: false, isSuccess: true, isLoading: false, error: "")
             });
   }
+
+  Future<void> userLogout() async {
+    state = state.copyWith(
+        isError: false,
+        isSuccess: true,
+        isLoading: false,
+        error: "",
+        users: []);
+    final box = Hive.box<Users>("users");
+    box.clear();
+  }
 }
+
+final authProvider = StateNotifierProvider<AuthProvider, UserState>((ref) =>
+    AuthProvider(UserState(
+        error: "",
+        isError: false,
+        isLoading: false,
+        isSuccess: false,
+        users: ref.watch(box))));
