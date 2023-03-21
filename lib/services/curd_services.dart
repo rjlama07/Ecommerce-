@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 class CrudServices {
   static final cloudinary =
-      CloudinaryPublic('CLOUD_NAME', 'UPLOAD_PRESET', cache: false);
+      CloudinaryPublic('dt2g4qvd9', 'clavstws', cache: false);
   static Dio dio = Dio();
   static Future<Either<String, bool>> userLogin({
     required String email,
@@ -22,12 +22,10 @@ class CrudServices {
     }
   }
 
-  static Future<Either<String, bool>> userSignUp({
+  static Future<Either<String, bool>> productCreate({
     required String productName,
     required String prodctDetail,
-    required String imageUrl,
     required int price,
-    required String publicId,
     required XFile image,
   }) async {
     try {
@@ -38,8 +36,8 @@ class CrudServices {
         "product_name": productName,
         "product_details": prodctDetail,
         "price": price,
-        "imageUrl": imageUrl,
-        "public_id": publicId,
+        "imageUrl": res.secureUrl,
+        "public_id": res.publicId,
       });
       return right(true);
     } on DioError catch (err) {

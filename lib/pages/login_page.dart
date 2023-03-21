@@ -39,6 +39,7 @@ class LoginPage extends ConsumerWidget {
                 const Spacer(),
                 if (!isLogin)
                   TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: ((value) {
                       if (value!.isEmpty) {
                         return "Filed is required";
@@ -53,6 +54,7 @@ class LoginPage extends ConsumerWidget {
                   ),
                 SizedBox(height: 10.h),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: ((value) {
                     if (value!.isEmpty) {
                       return "Email field required";
@@ -89,18 +91,16 @@ class LoginPage extends ConsumerWidget {
                 SizedBox(height: 10.h),
                 ElevatedButton(
                     onPressed: () {
-                      if (form.currentState!.validate()) {
-                        if (isLogin) {
-                          ref.read(authProvider.notifier).userLogin(
-                                email: emailController.text,
-                                password: passWordController.text,
-                              );
-                        } else {
-                          ref.read(authProvider.notifier).userSignUp(
+                      if (isLogin) {
+                        ref.read(authProvider.notifier).userLogin(
                               email: emailController.text,
                               password: passWordController.text,
-                              fullName: fullNameConttoller.text);
-                        }
+                            );
+                      } else {
+                        ref.read(authProvider.notifier).userSignUp(
+                            email: emailController.text,
+                            password: passWordController.text,
+                            fullName: fullNameConttoller.text);
                       }
                     },
                     child: auth.isLoading
