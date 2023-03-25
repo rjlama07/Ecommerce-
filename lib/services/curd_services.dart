@@ -13,7 +13,7 @@ class CrudServices {
     required String password,
   }) async {
     try {
-      final response = await dio
+      await dio
           .post(userLoginUrl, data: {"email": email, "password": password});
 
       return right(true);
@@ -32,7 +32,7 @@ class CrudServices {
       CloudinaryResponse res = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(image.path,
               resourceType: CloudinaryResourceType.Image));
-      final response = await dio.post(addProduct, data: {
+      await dio.post(addProduct, data: {
         "product_name": productName,
         "product_details": prodctDetail,
         "price": price,

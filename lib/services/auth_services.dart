@@ -28,7 +28,7 @@ class AuthServices {
     required String fullName,
   }) async {
     try {
-      final response = await dio.post(userSignupUrl,
+      await dio.post(userSignupUrl,
           data: {"email": email, "password": password, "full_name": fullName});
       return right(true);
     } on DioError catch (err) {

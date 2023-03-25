@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:ecommerce/models/curd_state.dart';
 import 'package:ecommerce/services/curd_services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

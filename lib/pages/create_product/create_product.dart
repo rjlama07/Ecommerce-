@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../widgets/custom_snackbar.dart';
-
 class CreatePost extends ConsumerWidget {
   CreatePost({super.key});
   final nameController = TextEditingController();

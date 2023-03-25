@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSPhotoLibraryUsageDescription</key> 
+	<string>Need to access Photos in order to get image.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Ecommerce</string>
 	<key>CFBundleExecutable</key>
