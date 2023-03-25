@@ -1,9 +1,14 @@
 import 'dart:io';
+import 'package:ecommerce/providers/auth_providers.dart';
 import 'package:ecommerce/providers/common_providers.dart';
+import 'package:ecommerce/providers/curd_provider.dart';
+import 'package:ecommerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
+import '../../services/curd_services.dart';
 
 class CreatePost extends ConsumerWidget {
   CreatePost({super.key});
@@ -15,6 +20,19 @@ class CreatePost extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final image = ref.watch(imageProvider);
+    final crudProviders = ref.watch(curdProvider);
+    ref.listen(
+      curdProvider,
+      (previous, next) {
+        if (next.isError) {
+          SnackShow.showSnackbar(context, next.error, true);
+        } else if (next.isSuccess) {
+          ref.invalidate(productShow);
+          SnackShow.showSnackbar(context, "Sucessfully added Product", false);
+          Get.back();
+        }
+      },
+    );
 
     return Scaffold(
       body: Container(
@@ -22,7 +40,7 @@ class CreatePost extends ConsumerWidget {
         child: Form(
           key: form,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
               SizedBox(
@@ -112,49 +130,25 @@ class CreatePost extends ConsumerWidget {
               SizedBox(
                 height: 10.h,
               ),
-              // InkWell(
-              //   onTap: post.isLoad
-              //       ? null
-              //       : (() {
-              //           if (form.currentState!.validate()) {
-              //             form.currentState!.save();
-
-              //             if (image != null) {
-              //               // ref.read(postProvider.notifier).addPost(
-              //               //     title: titleController.text.trim(),
-              //               //     detail: detailController.text.trim(),
-              //               //     userID: user!.uid,
-              //               //     image: image);
-              //             } else {
-              //               SnackShow.showSnackbar(
-              //                   context, "Please select an image", true);
-              //             }
-              //           } else {
-              //             // ref.read(autoValid.notifier).togle();
-              //           }
-              //         }),
-              //   child: Container(
-              //     width: double.maxFinite,
-              //     padding:
-              //         const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              //     decoration: const BoxDecoration(color: Colors.blue),
-              //     child: Center(
-              //       child: post.isLoad
-              //           ? const Center(
-              //               child: CircularProgressIndicator(
-              //                 color: Colors.white,
-              //               ),
-              //             )
-              //           : Text(
-              //               "Add Post",
-              //               style: TextStyle(
-              //                   fontWeight: FontWeight.w500,
-              //                   color: Colors.white,
-              //                   fontSize: 40.sp),
-              //             ),
-              //     ),
-              //   ),
-              // ),
+              ElevatedButton(
+                  onPressed: () {
+                    if (image != null) {
+                      if (form.currentState!.validate()) {
+                        ref.read(curdProvider.notifier).productCreate(
+                            productName: nameController.text,
+                            prodctDetail: detailController.text,
+                            price: int.parse(priceController.text),
+                            image: image,
+                            token: ref.watch(authProvider).users[0].token);
+                      }
+                    } else {
+                      SnackShow.showSnackbar(
+                          context, "Please select a image", true);
+                    }
+                  },
+                  child: crudProviders.isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text("Submit")),
               SizedBox(
                 height: 6.h,
               ),

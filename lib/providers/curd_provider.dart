@@ -10,13 +10,15 @@ class CurdProvider extends StateNotifier<CurdState> {
     required String prodctDetail,
     required int price,
     required XFile image,
+    required String token,
   }) async {
     state = state.copyWith(isLoading: true);
     final response = await CrudServices.productCreate(
         image: image,
         prodctDetail: prodctDetail,
         price: price,
-        productName: productName);
+        productName: productName,
+        token: token);
     response.fold((l) {
       state = state.copyWith(
           error: l, isError: true, isSuccess: false, isLoading: false);

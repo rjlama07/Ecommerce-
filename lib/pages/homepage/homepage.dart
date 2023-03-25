@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
+import '../../services/curd_services.dart';
+
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
+    final productData = ref.watch(productShow);
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -39,8 +42,43 @@ class HomePage extends ConsumerWidget {
           ],
         ),
       ),
-      body: Center(
-        child: ElevatedButton(onPressed: () {}, child: const Text("Logout")),
+      body: SafeArea(
+        child: productData.when(
+          data: (data) => GridView.builder(
+            itemCount: data.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 3 / 4,
+            ),
+            itemBuilder: (context, index) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: GridTile(
+                  footer: Container(
+                    color: Colors.black54,
+                    height: 45,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(data[index].product_name),
+                        Text(data[index].price.toString())
+                      ],
+                    ),
+                  ),
+                  child: ClipRRect(
+                    child: Image.network(
+                      data[index].image,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          error: (error, stackTrace) => Text(error.toString()),
+          loading: () => const Center(child: CircularProgressIndicator()),
+        ),
       ),
     );
   }
